@@ -1,0 +1,60 @@
+body{
+    margin:0px;
+}
+.All{
+    width: 701px;
+    height:300px;
+    display: block;
+    border: 1px solid #D2D2D2;
+}
+.Div{
+    width: 233px;
+    height:88.1%;
+    overflow:auto;
+    float: left;
+    border-right: 1px solid #D2D2D2;
+}
+.Div ul{
+    display: block;
+    height: 35px;
+    line-height: 32px;
+    border-bottom:  1px solid #D2D2D2;
+    padding-left: 5px;
+    margin: 0px;
+    list-style-type:none;
+}
+ul li{
+    font: normal 13px/35px arial,sans-serif;
+}
+.btn-primary{
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border-color: #357ebd;
+    color: #fff;
+    background-color: #357ebd;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 10px;
+    font-size: 10px;
+    line-height: 1.42857;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+#head span{
+    float: left;
+    display: block;
+    height: 35px;
+    width: 228px;
+    line-height: 32px;
+    padding-left: 5px;
+    margin: 0px;
+    border-bottom: 1px solid #D2D2D2;
+    list-style-type: none;
+    font: normal 16px/38px arial,sans-serif;
+}
+

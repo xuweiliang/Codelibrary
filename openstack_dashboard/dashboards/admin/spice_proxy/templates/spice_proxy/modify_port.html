@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Modify Http Port" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Modify Http Port") %}
+{% endblock page_header %}
+
+{% block main %}
+  {% include "admin/spice_proxy/_modify_port.html" %}
+{% endblock %}
+

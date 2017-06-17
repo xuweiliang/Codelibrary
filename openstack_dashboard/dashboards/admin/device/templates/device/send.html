@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Send Messaeg" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Send Message") %}
+{% endblock %}
+
+{% block main %}
+  {% include "admin/device/_send.html" %}
+{% endblock %}
+

@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}
+{% trans "Device Manage" %}
+{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("All Device") %}
+{% endblock page_header %}
+
+{% block main %}
+    {{ table.render }}
+<script type="text/javascript">
+function check_status(){
+          $("#device").find("tbody tr").each(function(){
+                        var idx = $(this).attr('data-object-id');
+                        var tr = $("#device__row__" + idx)
+                        var td = tr.find("td.status");
+                        var _type = td.text();
+                        type =_type.replace(/^\s+|\s+$/g,"") 
+                        $("#device__row_"+idx+"__action_start").addClass("disabled");
+                        $("#device__row_"+idx+"__action_reboot").addClass("disabled");
+                        $("#device__row_"+idx+"__action_dev_stop").addClass("disabled");
+                        $("#device__row_"+idx+"__action_message").addClass("disabled");
+                        $("#device__row_"+idx+"__action_edit").addClass("disabled");
+                        if( type == "waiting"){
+                                td.addClass("waiting_css");
+                        }else if(type == 'on-line' ){
+                                $("#device__row_"+idx+"__action_reboot").removeClass("disabled");
+                                $("#device__row_"+idx+"__action_dev_stop").removeClass("disabled");
+                                $("#device__row_"+idx+"__action_message").removeClass("disabled");
+                                $("#device__row_"+idx+"__action_edit").removeClass("disabled");
+                                td.html("<span class='glyphicon glyphicon-ok-sign' style='color:#1b9e13; width:65px;'>"+type+"</span>");
+                        }else if( type == "off-line"){
+                                $("#device__row_"+idx+"__action_start").removeClass("disabled");
+                                td.html("<span class='glyphicon glyphicon-minus-sign' style='color:#8c8282; width:65px;'>"+type+"</span>");
+                        }
+                })
+        }
+        function ajaxStatus(){
+                var id_number = [];
+                $("#device").find("tbody tr").each(function(){
+                        var idx = $(this).attr('data-object-id');
+                        id_number[id_number.length] = idx;
+                })
+                $.ajax({
+            type:"GET",
+            url:"ajax_status?id_number=["+id_number+"]",
+            dataType:"jsonp",
+            jsonp:"callback",
+            jsonpCallback:"match",
+            success:function(data){
+                var ret = data.success;
+                if( ret ){
+                  for(var i=0;i< ret.length;i++){
+                      var uid = ret[i].id;
+                      $("#device__row__" + ret[i].id).each(function(){
+                      var td = $(this).find('td.status');
+                      var host_td = $(this).find('td.host');
+                      var ip_td = $(this).find('td.ip');
+                      var span_ = td.find("span") ;
+                      var _text = span_.text() || ret[i].status;
+                      host_td.html(ret[i].hostname)
+                      ip_td.html(ret[i].ip)
+                      if(_text == "on-line"){
+                          $("#device__row_"+uid+"__action_start").addClass("disabled");
+                          $("#device__row_"+uid+"__action_reboot").removeClass("disabled");
+                          $("#device__row_"+uid+"__action_dev_stop").removeClass("disabled");
+                          $("#device__row_"+uid+"__action_message").removeClass("disabled");
+                          $("#device__row_"+uid+"__action_edit").removeClass("disabled");
+                          td.html("<span class='glyphicon glyphicon-ok-sign' style='color:#1b9e13; width:65px;'>"+ret[i].status+"</span>");
+                          if(td.hasClass("waiting_css")){
+                                td.removeClass("waiting_css");
+                                                                }
+                      }else if (_text=="off-line"){
+                          $("#device__row_"+uid+"__action_start").removeClass("disabled");
+                          $("#device__row_"+uid+"__action_reboot").addClass("disabled");
+                          $("#device__row_"+uid+"__action_dev_stop").addClass("disabled");
+                          $("#device__row_"+uid+"__action_message").addClass("disabled");
+                          $("#device__row_"+uid+"__action_edit").addClass("disabled");
+                          td.html("<span class='glyphicon glyphicon-minus-sign' style='color:#8c8282; width:65px;'>"+ret[i].status+"</span>");
+                          if(td.hasClass("waiting_css")){
+                               td.removeClass("waiting_css");
+                          }
+                      }else if(ret[i].status=="waiting"){
+                          td.html(ret[i].status)
+                          td.addClass("waiting_css");
+                          $("#device__row_"+uid+"__action_start").addClass("disabled");
+                          $("#device__row_"+uid+"__action_reboot").addClass("disabled");
+                          $("#device__row_"+uid+"__action_dev_stop").addClass("disabled");
+                          $("#device__row_"+uid+"__action_message").addClass("disabled");
+                          $("#device__row_"+uid+"__action_edit").addClass("disabled");
+                      }
+                      })
+                  }
+               }
+                        }
+                })
+        }
+        check_status();
+        window.setInterval(function(){
+                ajaxStatus();
+        },30000)
+</script>
+{% endblock %}

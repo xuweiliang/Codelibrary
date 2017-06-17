@@ -1,0 +1,62 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}clear_storage_form{% endblock %}
+{% block form_action %}{% url 'horizon:admin:storage:storage:clearstorage' %}{% endblock %}
+
+{% block modal_id %}clear_storage_modal{% endblock %}
+{% block modal-header %}{% trans "Clear Local Storage" %}{% endblock %}
+
+{% block modal-body %}
+<div class='left'>
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    <div class="form-group">
+      <label class="control-label  " for="id_zfs_pools">{% trans "ZFS Pool" %}</label>
+      <div class=" ">
+          <select class="form-control" id="id_zfs_pools" name="zfs_pools" data-original-title="" title="">
+          </select>
+      </div>
+    </div>
+    </fieldset>
+</div>
+<script type="text/javascript">
+$(function(){
+    $("#id_host").change(function(){
+        var host = $(this).val() 
+        select_zfs_pools(host)
+    })
+    $("#id_zfs_pools").change(function(){
+        $("#id_zfs_pool_select").val($(this).val())
+    }) 
+})
+
+function select_zfs_pools(host){
+    if(host){
+        $.ajax({
+                type:"GET",
+                url:"select_zfs_pools?host="+host,
+                dataType:"jsonp",
+                jsonp:"callback",
+                jsonpCallback:'_result',
+                success:function(data){
+                    console.info(data.success)
+                    var result = data.success
+                    $("#id_zfs_pools").find("option").remove();
+                    $("#id_zfs_pools").prepend("<option value=''>{% trans 'Select a ZFS Pool' %}</option>")
+                    for(var i=0; i<result.length; i++){
+                        $("#id_zfs_pools").append("<option value="+result[i]+">"+result[i]+"</option>")
+                    }
+                }
+        })
+    }
+}
+</script>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" id="_submit_form" type="submit" value="{% trans 'Clear' %}" />
+  <a href="{% url 'horizon:admin:storage:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
+

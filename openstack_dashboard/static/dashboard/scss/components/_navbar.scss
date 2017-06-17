@@ -1,0 +1,73 @@
+.navbar-brand {
+  padding: 0 $padding-small-horizontal;
+  margin: 0;
+  display: block;
+  height:100%;
+
+  img {
+    display: inline-block;
+    //max-height: $navbar-height; //xuweiliang add to
+    vertical-align: middle;
+  }
+}
+
+//Specifity Required
+.navbar-header{
+
+  // These allow the vertical centering to work properly
+  //line-height: $navbar-height; //xuweiliang add to
+  font-size: 0;
+}
+
+.navbar-nav.navbar-right:last-child {
+    //xuweiliang add to
+    margin-right: 0px;
+}
+
+/*xu weilaing add to  next*/
+.navbar-nav{
+    border: 1px solid #f9f9f9;
+    background-color: #d5d5d5;
+    border-radius: 5px;
+    height: 30px;
+    /* line-height: 56px; */
+    margin: 20px;
+}
+
+.topbar {
+  .navbar {
+    margin-bottom: 1px;
+    height: 80px;  // xuweiliang add to
+    background-color:#262c32; //xuweiliang add to
+  }
+
+  .dropdown-toggle > .fa {
+    padding-left: $padding-small-vertical;
+    padding-right: $padding-small-vertical;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.context-delimiter {
+  font-size: $padding-small-vertical;
+  vertical-align: middle;
+  padding-right: $padding-small-vertical;
+  padding-left: $padding-small-vertical;
+}
+
+// Scrollbar for the project menu on larger screens
+// Not needed for smaller screens, as it is already scrollable
+// and can be collapsed to access the settings menu etc.
+@media(min-width: $screen-sm-min) {
+  .context-selection {
+    max-height: $context-selector-max-height;
+    overflow-y: scroll;
+  }
+}

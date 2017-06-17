@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Authorization Manage" %}{% endblock %}
+
+{#% block page_header %}
+  {% include "horizon/common/_domain_page_header.html" with title=_("License Display") %}
+{% endblock page_header %#}
+
+{% block main %}
+{{ table.render }}
+<!--script type="text/javascript">
+var _tr = $("#license thead").find(".table_caption");
+_tr.after("<tr><td style='border-left-style: none; border-right-style: none;' colspan=10>"+
+          "{#% trans 'Please do not modify the server time,otherwise the license is likely to fail will lead to the normal use of the desktop cloud' %#}</td></tr>");
+</script-->
+{% endblock %}

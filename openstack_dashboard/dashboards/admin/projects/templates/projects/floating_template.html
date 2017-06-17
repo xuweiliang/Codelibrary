@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--script src="../../../../../static/horizon/lib/jquery/jquery.min.js"></script-->
+    <link rel="stylesheet" href="/dashboard/static/dashboard/css/user_vm.css" type="text/css" media="screen">
+<style>
+    #loading-mask{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    z-index:20000;
+    opacity: 0.7;
+    }
+    #loading{
+    position:absolute;
+    top: 100px;
+    left: 330px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius:10px;
+    }
+</style>
+</head>
+<body>
+<div>
+<div id="About"></div>
+    <div class="All" style="">
+        <div id="head">
+            <span >{% trans 'Float' %}</span>
+            <span style="border-left: 1px solid #D2D2D2;">{% trans 'Pool binding desktop' %}</span>
+            <span style="border-left: 1px solid #D2D2D2;">{% trans 'Free desktop' %}
+            <a href="javascript:bind_vm();" id="oneKeyBinding" class="btn-primary" style="margin-left:50px;text-decoration:none;position:fixed">{% trans 'Bindings all' %}</a>
+            </span>
+        </div>
+        <input id="tenant_id" type="text" value={{tenant_id}} style="display:none">
+        <div id="username" class="Div">
+          <ul id={{tenant.id}} onclick="changeBackground(this.id)">
+                  <li>{{tenant.name}}</li>
+          </ul>
+        </div>
+        <div id="User_VM" class="Div">
+            <ul style="display:block">
+               <li style="width: 85%;float: left">{% trans 'Select a pool' %}</li>
+            </ul>
+        </div>
+        <div id="nobind_VM" class="Div" style="border-right:0">
+            {% for i in free_instance%}
+            <ul id= {{i.id}}>
+               <li id='' style="width: 85%;float: left">{{i.name}}</li>
+                <a href="javascript:add_pool_vm('{{i.id}}','{{i.name}}')" class="btn-primary" style="text-decoration:none;">+</a>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="/dashboard/static/horizon/js/pool_vm.js"></script>
+</body>
+</html>
+

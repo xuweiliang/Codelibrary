@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Storage" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Storage") %}
+{% endblock page_header %}
+
+{% block main %}
+<div class="row">
+  <div class="col-sm-12">
+    {{ tab_group.render }}
+  </div>
+</div>
+<script type="text/javascript">
+function data_number(){
+    var _idx_list = []
+    $("#storage").find("tbody tr").each(function(){
+        var idx = $(this).attr('data-object-id');
+        var _td = $("#storage__row__"+idx).find("td.storage_css");
+        var _text = _td.html();
+        if (_text != 'success' && _text != "error" && _text != undefined){
+            _idx_list[_idx_list.length]=idx   
+            _td.addClass("storage_status")
+         
+        }else if(_text != undefined){
+            _td.removeClass("storage_status")
+            _idx_list[_idx_list.length]=idx   
+        }
+    })
+    return _idx_list
+}
+
+function check_status(_number){ 
+    if(_number.length > 0){
+        $.ajax({
+                type:"GET",
+                url:"storage_status?id=["+_number+"]",
+                dataType:"jsonp",
+                jsonp:"callback",
+                jsonpCallback:'check_status',
+                success:function(data){
+                    var storage_status = ["success","error"]
+                    var data_text = data.success
+                    for(var i=0; i< data_text.length; i++){
+                        var _text = $("#storage__row__"+data_text[i].id).find("td.storage_css")
+                        _text.html(data_text[i]._status)
+                        if (data_text[i]._status == "success" || data_text[i]._status == "error"){
+                             _text.removeClass("storage_status");
+                        }else{
+                            _text.addClass("storage_status");
+                        }
+                    }
+                }
+        })
+    }
+        
+    
+} 
+
+window.setInterval(function(){
+    var _number= data_number()
+    check_status(_number)
+}, 6000)
+data_number()
+</script>
+{% endblock %}
+

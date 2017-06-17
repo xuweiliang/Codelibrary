@@ -1,0 +1,33 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}create_file_form{% endblock %}
+{% block ng_controller %}FileFormCtrl{% endblock %}
+{% block form_action %}{% url 'horizon:admin:images:images:upload' %}{% endblock %}
+{% block form_attrs %}enctype="multipart/form-data"{% endblock %}
+
+{% block modal-header %}{% trans "Upload A File" %}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+<div class="right">
+    <h3>{% trans "Description:" %}</h3>
+    <p>
+        {% trans "configuration file will be uploaded from your local file system. Multiple file formats are supported (.txt, .doc, .xls, .etc)" %}
+    </p>
+    <p>
+       <strong>{% trans "Please note: " %}</strong>
+        {% trans "You must ensure that your configuration file is correct. The configuration file will be used create virtual machines." %}
+    </p>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Upload File' %}" />
+  <a href="{% url 'horizon:admin:images:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}

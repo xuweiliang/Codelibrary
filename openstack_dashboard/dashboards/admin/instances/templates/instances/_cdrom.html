@@ -1,0 +1,34 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}edit_cdrom_form{% endblock %}
+{% block form_action %}{% url 'horizon:admin:instances:editcdrom' instance_id %}{% endblock %}
+
+{% block modal_id %}edit_cdrom_modal{% endblock %}
+{% block modal-header %}
+{% if show_attach %}
+    {% trans "Attach/Dettach ISO" %}
+{% else %}
+    {% trans "Add CDROM Device" %}
+{% endif %}
+{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+
+{% endblock %}
+
+{% block modal-footer %}
+     {% if show_attach %}
+     <input class="btn btn-primary pull-right" type="submit" value="{% trans "Attach/Dettach ISO" %}" />
+     {% else %}
+     <input class="btn btn-primary pull-right" type="submit" value="{% trans "Add CDROM Device" %}" />
+     {% endif %}
+     <a href="{% url 'horizon:admin:instances:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
+

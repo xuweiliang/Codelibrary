@@ -1,0 +1,28 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}{% endblock %}
+{#% block form_action %}{% url 'horizon:admin:volumes:volumes:increase' %}?{{ request.GET.urlencode }}{% endblock %#}
+{% block form_action %}{% url 'horizon:admin:volumes:volumes:increase' %}{% endblock %}
+
+{% block modal_id %}increase_volume_modal{% endblock %}
+{% block modal-header %}{% trans "Extend Volume Storage" %}{% endblock %}
+
+{% block modal-body %}
+  <div class="left">
+    <fieldset>
+      {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+  </div>
+
+  <div class="right">
+    <h3>{% trans "Description:" %}
+    <p>{% trans "Extend the size of current volumes group." %}</p>
+  </div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Extend" %}" />
+  <a href="{% url 'horizon:admin:volumes:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}

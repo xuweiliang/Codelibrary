@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Spice Proxy Setting" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Spice Proxy Setting") %}
+{% endblock page_header %}
+
+{% block main %}
+  {% include "admin/spice_proxy/_update.html" %}
+{% endblock %}
+

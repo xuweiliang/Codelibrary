@@ -1,0 +1,29 @@
+{% load i18n %}
+
+{% spaceless %}
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      {% include "header/_brand.html" %}
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+      <!--ul class="test">
+        {#% include "header/_context_selection.html" %#}
+      </ul-->
+
+      <ul id="usermenu" class="nav navbar-nav navbar-right">
+        {% include "header/_user_menu.html" %}
+        {% include "header/_region_selection.html" %}
+      </ul>
+      <!--ul class="test" style="float: right; height:100%; padding: 25px;"-->
+      <!--ul class="navbar-nav navbar-right" style="border-radius: 22px">
+        {% include "header/_context_selection.html" %}
+      </ul-->
+      <ul class="navbar-right" id="remote_ul" style="padding:26px;">{% include "header/_context_selection.html" %}</ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+{% endspaceless %}

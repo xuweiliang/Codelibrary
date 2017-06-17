@@ -1,0 +1,157 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}add_storage_form{% endblock %}
+{% block form_action %}{% url 'horizon:admin:storage:storage:create' %}{% endblock %}
+
+{% block modal_id %}add_storage_modal{% endblock %}
+{% block modal-header %}{% trans "Add Local Storage" %}{% endblock %}
+
+{% block modal-body %}
+<div class='left'>
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+<div class='right'>
+  <fieldset>
+    <div class="form-group">
+      <label class="control-label  " for="id_accelerator_disk">{% trans "Accelerator disk" %}</label>
+      <div class=" ">
+          <select class="form-control" id="id_accelerator_disk" name="accelerator_disk" data-original-title="" title="">
+          </select>
+      </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label" id='label_data_disk' for="all_checked" style="visibility:hidden;">
+           <input type="checkbox" id="all_checked" onclick="choice_all_data_disk(this.id)" /><span>{% trans "Select Disk" %}</span></label>
+        <div class="">
+          <div class="checkbox_disk">
+          </div>
+        </div>
+    </div>
+  </fieldset>
+</div>
+<script type="text/javascript">
+$(function(){
+    $("#id_node").change(function(){
+        var node = $(this).val() 
+        select_all_disk(node)
+    })
+
+    $("#id_accelerator_disk").change(function(){
+        var select_val = $(this).val()
+        var _type = $(this).find("option:selected").attr("disk_type");
+        $("#disk_message").remove();
+        $(".checkbox_disk").find("label").remove()
+        $("#label_data_disk").css("visibility","hidden")
+        if(select_val && _type == 'SSD'){
+            $("#id_cache_disk").val(select_val)
+            $.ajax({
+                type:"GET",
+                url:"cache_partition?cache_disk="+select_val,
+                dataType:"jsonp",
+                jsonp:"callback",
+                jsonpCallback:'result', 
+                success:function(data){
+                    $("#label_data_disk").css("visibility","inherit")
+                    var all_opt = $("#id_accelerator_disk option").map(function(){
+                        var opt_val = $(this).val();
+                        if (opt_val && select_val!=opt_val){
+                            return $(this)
+                        }
+                    }).get()
+                    var _disk = $(".checkbox_disk")
+                    for(var i=0; i<all_opt.length; i++){
+                        var _disk_text ="<label style=width:100%>"+
+                                        "<input id='"+all_opt[i][0].value+"' value='"+all_opt[i][0].value+
+                                        "'type='checkbox' onclick='check_data_disk(this.id)'>"+
+                                        "<span>"+all_opt[i][0].innerText+"</span>"+"</label>"
+                        _disk.append(_disk_text)
+                    }
+                }
+            })
+        }else{
+              $("#id_cache_disk").val("")
+              $("#id_accelerator_disk").after("<span id='disk_message' class='help-block alert alert-danger'>"+
+               "{% trans 'Please select SSD solid acceleration hard disk.' %} </span>")
+        }
+    })
+
+})
+
+function check_data_disk(id){
+    var data_disk_val = $("#id_data_disk").val()
+    var data_list = data_disk_val.split(',')
+    var _index = data_list.indexOf(id)
+    if(_index == -1){
+       if (data_list[0] == ''){
+           data_list.shift();
+       }
+       data_list.push(id)
+    }else{
+         data_list.splice(_index, 1)
+    }
+    $("#id_data_disk").val(data_list)
+    
+}    
+
+function choice_all_data_disk(id){
+    var all_select = $("#all_checked").is(':checked')
+    var all_box = $(".checkbox_disk label input[type='checkbox']")
+    var all_list = []
+    for (var i=0; i<all_box.length; i++){
+        if(all_select){
+            all_box[i].checked=true;
+            all_list.push(all_box[i].value)
+        }else{
+            all_box[i].checked=false;
+        }
+    }
+    var box_value = all_list.join(',')
+    document.getElementById("id_data_disk").value=box_value
+}
+
+function select_all_disk(node){
+
+    if(node){
+        $.ajax({
+                type:"GET",
+                url:"select_disk?node="+node,
+                dataType:"jsonp",
+                jsonp:"callback",
+                jsonpCallback:'result',
+                success:function(data){
+                    var result = data.success
+                    $("#id_accelerator_disk").find("option").remove();
+                    $("#id_accelerator_disk").prepend("<option value=''>{% trans 'Select Disk' %}</option>")
+                    for(var i=0; i<result.length; i++){
+                        for(var key in result[i]){
+                            (result[i][key].rotational !=0) ? disk_type="HDD":disk_type="SSD"
+                            $("#id_accelerator_disk").append("<option disk_type="+disk_type+" value="+key+">"+key+
+                            "&nbsp;&nbsp;"+result[i][key].size+"&nbsp;&nbsp;"+result[i][key].model+
+                            "&nbsp;&nbsp;"+disk_type+"</option>")
+                        }
+                    }
+                },
+                error:function(data){
+                    console.warn(data);
+                }
+        })
+    }else{
+          $("#id_accelerator_disk").find("option").remove();
+          $("#disk_message").remove();
+          $(".checkbox_disk").find("label").remove()
+          $("#label_data_disk").css("visibility","hidden")
+    }
+}
+select_all_disk($("#id_node").val())
+
+</script>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" id="_submit_form" type="submit" value="{% trans 'Add' %}" />
+  <a href="{% url 'horizon:admin:storage:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}

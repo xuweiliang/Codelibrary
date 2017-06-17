@@ -1,0 +1,28 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}PlanDevsnapshotForm{% endblock %}
+{% block form_action %}{% url 'horizon:admin:hypervisors:compute:plandevsnapshot' compute_host %}{% endblock %}
+
+{% block modal-header %}{% trans "Plan Devsnapshot" %}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+<div class="right">
+    <h3>{% trans "Description:" %}</h3>
+    <p>{% trans "Plan Devsnapshot: At a particular point in time, to all the instances on the compute nodes selected by incremental snapshot of a snapshot" %}</p>
+    <P>{% trans "The time format is 'minute/hour/day/month/week'--'00/00/00/00/0'such as time is everyday 24:00 -- 00/24/00/00/0, every mouth firstday 10:30 --30/10/01/00/0" %}</p>
+    <P>{% trans "Select whether to enable plan snapshot for the compute node"%}</p>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Save Plan" %}" />
+  <a href="{% url 'horizon:admin:hypervisors:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
+

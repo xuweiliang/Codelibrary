@@ -1,0 +1,15 @@
+{% load i18n %}
+<a href="" id="loginfo_{{ id }}" class="link-popover" rel="popover" tabindex="0" data-trigger="focus" data-content="
+<table class='table table-bordered'>
+  <tr><th>{% trans 'Name' %}</th><td>{{ event_object }}</td></tr>
+  <tr><th>{% trans 'User' %}</th><td>{{ user_name }}</td></tr>
+  <tr><th>{% trans 'Tenant' %}</th><td>{{ project_name }}</td></tr>
+  <tr><th>{% trans 'Time' %}</th><td>{{ time }}</td></tr>
+  <tr><th>{% trans 'Details' %}</th><td>{{ detail }}</td></tr>
+</table>
+" data-original-title=' ': ">{{ event_object }}</a>
+<script type="text/javascript" charset="utf-8">
+$(function ()
+    { $("#loginfo_{{ id }}").popover({html:true});
+});
+</script>

@@ -1,0 +1,86 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}update_device_form{% endblock %}
+{% block form_action %}{% url "horizon:admin:device:update" id %}{% endblock %}
+
+{% block modal_id %}update_device_modal{% endblock %}
+{% block modal-header %}{% trans "Update Device" %}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+  <fieldset>
+  {% include "horizon/common/_form_fields.html" %}
+  </fieldset>
+</div>
+<div class="right">
+  <h3>{% trans "Description" %}:</h3>
+  <p>{% trans "Host name can be filled or not filled." %}</p>
+  <p>{% trans "Select the DHCP mode does not have to specify the IP address, gateway, subnet mask." %}</p>
+  <p>{% trans "Select the network static mode must specify the IP address, gateway, subnet mask." %}</p>
+  <p>{% trans "DNS can be filled or not filled." %}</p>
+  <p>{% trans "Select the remain,IP address,gateway,subnet mask,dns do not write." %}</p>
+</div>
+<script type="text/javascript">
+$(function(){
+    var network = $('#id_network_type').val();
+    if (network == "static"){
+          $("#id_ipaddr").closest(".form-group").show();
+          $("#id_gateway").closest(".form-group").show();
+          $("#id_mask").closest(".form-group").show();
+    }else{
+          $("#id_ipaddr").closest(".form-group").hide();
+          $("#id_gateway").closest(".form-group").hide();
+          $("#id_mask").closest(".form-group").hide();
+          $("#update_submit").removeClass("disabled");
+    }
+    $("#id_network_type").change(function(){
+        var option_val = $(this).val();
+        if(option_val =="static"){
+            $("#id_ipaddr").closest(".form-group").show();
+            $("#id_gateway").closest(".form-group").show();
+            $("#id_mask").closest(".form-group").show();
+        }else{
+            $("#id_ipaddr").closest(".form-group").hide();
+            $("#id_gateway").closest(".form-group").hide();
+            $("#id_mask").closest(".form-group").hide();
+            $("#update_submit").removeClass("disabled");
+        }
+    })
+
+    $("#id_ipaddr").focus(function(){
+        $("#update_submit").addClass("disabled")
+    })
+
+    $("#id_ipaddr").blur(function(){
+        var id_ipaddr=$("#id_ipaddr").val()
+        var device_id=$("#id_id_update").val()
+        $.ajax({
+            type:"GET",
+            url: "check_ipaddr?ipaddr="+id_ipaddr+"&source_id="+device_id,
+            dataType: "jsonp",
+            jsonp : "callback",
+            jsonpCallback:"result",
+            success:function(data){
+               if(data.valid == 0){
+                   $("#ipaddr_message").remove()
+                   $("#update_submit").addClass("disabled")
+                   var error_message = "<span id='ipaddr_message' class='help-block alert alert-danger'>{% trans 'IP address already exists.'%}</span>"
+                   $("#id_ipaddr").after(error_message)
+               }else{
+                   $("#ipaddr_message").remove()
+                   $("#update_submit").removeClass("disabled");
+               }
+            }
+        })
+    })
+})
+</script>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" id="update_submit" type="submit" value="{% trans "Update Device" %}" />
+  <a href="{% url 'horizon:admin:device:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
+

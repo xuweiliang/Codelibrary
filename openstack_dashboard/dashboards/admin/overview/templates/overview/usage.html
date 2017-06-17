@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Usage Overview" %}{% endblock %}
+
+{% block main %}
+  {% include "horizon/common/_limit_summary.html" %}
+  {#% include "horizon/common/_test_summary.html" %#}
+{% endblock %}

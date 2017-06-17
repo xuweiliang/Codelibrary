@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "System Logs" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=" " %}
+{% endblock page_header %}
+
+{% block main %}
+<style type="text/css">
+    .parent_select {float:right;}
+    .select{
+	height:32px;
+       	font-size: 13px;
+    	line-height: 1.42857;
+    	color: #555;
+    	background-color: #fff;
+    	background-image: none;
+    	border: 1px solid #ccc;
+    	border-radius: 5px;
+	margin-right: 10px;
+    }
+</style>
+  {{ table.render }}
+<script>
+
+var Pv="";
+function appendDiv(){ 
+    var log = document.getElementsByClassName("table_header")[0]
+    //alert(log)
+    var newUl=document.createElement("div")
+    newUl.setAttribute("class","parent_select")
+    newUl.innerHTML=
+    	'<select class="select" id="select" onChange="set_select(this.value)">'+
+  	    '<option value ="0">{% trans "Select type" %}</option>'+
+  	    //'<option value ="action">{% trans "Action"%}</option>'+
+  	    '<option id="user_name" value="user_name">{% trans "User" %}</option>'+
+  	    '<option id="project_name" value="project_name">{% trans "Pool" %}</option>'+
+  	    '<option id="time" value="time">{% trans "Time" %}</option>'+
+  	    '<option id="visit_ip" value="visit_ip">{% trans "Visit IP" %}</option>'+
+  	    '<option id="result" value="result">{% trans "Result" %}</option>'+
+	'</select>'+
+        //'<select class="select" id="W_select" onChange="window.location=this.value">'+
+        '<select class="select" id="W_select" onChange="send(this.value)">'+
+            '<option value ="0">{% trans "Property" %}</option>'+
+        '</select>'
+    console.info("log =====================", log)
+    if (log){
+    	log.appendChild(newUl)
+    }
+}
+appendDiv();
+cities = new Object();
+//cities['action']=new Array('{% trans "Create" %}', '{% trans "Delete" %}','{% trans "Update" %}','{% trans "Start" %}','{% trans "Stop" %}','{% trans "Reboot" %}','{% trans "Resize" %}');
+//cities['action_val']=new Array('Create', 'Delete','Update','Start','Stop','Reboot','Resize');
+cities['user_name']=new Array();
+cities['user_name_val']=new Array();
+cities['project_name']=new Array();
+cities['project_name_val']=new Array();
+cities['visit_ip']=new Array();
+cities['visit_ip_val']=new Array();
+cities['time']=new Array('{% trans "One day" %}', '{% trans "Two day" %}','{% trans "One week" %}','{% trans "Two week" %}','{% trans "Three week" %}','{% trans "One month" %}','{% trans "Two month" %}');
+cities['time_val']=new Array('1', '2','7','14','21','30','60');
+cities['result']=new Array('{% trans "Success" %}', '{% trans "Failure" %}');
+cities['result_val']=new Array('Success', 'Failure');
+function ajax_user(){
+    var data = ""
+    $.ajax({
+        type:"GET",
+        url: "../systemlogs/logFilter",
+        dataType:"jsonp",
+        jsonp:"callback",
+        jsonpCallback:"match",
+        success:function(msg){
+	    for(var i=0;i<msg.success[0].length;i++){
+		cities['user_name'][i] = msg.success[0][i]
+		cities['user_name_val'][i] = msg.success[0][i]
+	    }  
+	    for(var i=0;i<msg.success[1].length;i++){
+		cities['project_name'][i] = msg.success[1][i]
+		cities['project_name_val'][i] = msg.success[1][i]
+	    }
+            for(var i=0;i<msg.success[2].length;i++){
+                cities['visit_ip'][i] = msg.success[2][i]
+                cities['visit_ip_val'][i] = msg.success[2][i]
+            }
+            checkCookie()
+	}
+    });
+}
+ajax_user();
+function getCookie(c_name)
+{
+    if (document.cookie.length>0)
+    {
+        c_start=document.cookie.indexOf(c_name + "=")
+        if (c_start!=-1)
+        {
+            c_start=c_start + c_name.length+1
+            c_end=document.cookie.indexOf(";",c_start)
+            if (c_end==-1) c_end=document.cookie.length
+            return unescape(document.cookie.substring(c_start,c_end))
+        }
+    }
+    return ""
+}
+
+function setCookie(c_name,value,expiredays)
+{
+    var exdate=new Date()
+    exdate.setDate(exdate.getDate()+expiredays)
+    document.cookie=c_name+ "=" +escape(value)+
+            ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+}
+
+function checkCookie()
+{
+    var Pv = getCookie('parent_val')
+    var Fv = getCookie('filter_val')
+    if(Pv != ""){
+	var Url = window.location.href
+	if((Url).match(/[\?]/g)){
+            set_select(Pv);
+    	    document.getElementById(Pv).selected="true"
+    	    document.getElementById(Fv).selected="true"
+        }else{
+	    setCookie('filter_val',"",1)
+    	    setCookie('parent_val',"",1)
+	}
+    }
+}
+function set_select(log_parent){
+    var pv = log_parent;
+    Pv = log_parent;
+    var ii,cv;
+    cv = pv+"_val"
+    city = document.getElementById("W_select")
+    remove_select(city);
+    if(pv=='0') return;
+    if(typeof(cities[pv])=='undefined')return;
+    for(i=0; i<cities[pv].length; i++)
+    {
+        ii = i+1;
+        city.options[ii] = new Option();
+        city.options[ii].text = cities[pv][i];
+        //city.options[ii].value = Url + cities[cv][i] + "&parent_val=" + pv;
+        city.options[ii].value = cities[cv][i];
+        city.options[ii].id = cities[cv][i];
+    }
+
+} 
+
+function send(Fv){
+    var Url = window.location.href
+    if((Url).match(/[\?]/g)){
+        Url = Url.split('?')[0] + "?filter_val="
+    }else{
+        Url = Url + "?filter_val=" 
+    }
+    setCookie('filter_val',Fv,1)
+    setCookie('parent_val',Pv,1)
+    window.location=Url + Fv + "&parent_val=" + Pv;
+}
+
+
+function remove_select(city){
+    for(var i=city.options.length-1;i>0;i--){
+        city.options.remove(i);
+    }
+}
+
+function skip_page(e){ 
+    var e = e || window.event; 
+    if(e.keyCode == 13){ 
+        var skipPage=document.getElementById("skip_pages").value
+	if(skipPage <= 0){
+	}else if(!/^[0-9]*$/.test(skipPage)){  
+    	}else{
+	    var allPage = document.getElementById("skip_page_id").value
+	    if(parseInt(skipPage) <= parseInt(allPage)){
+		var Pv = getCookie('parent_val')
+		var Fv = getCookie('filter_val')
+		if(Pv != ""){
+		    window.location.href= "../systemlogs/?skipPage=" + skipPage + "&filter_val=" + Fv + "&parent_val=" + Pv;
+	  	}else{
+		    window.location.href= "../systemlogs/?skipPage=" + skipPage;
+		}
+	    }	
+	}
+    } 
+}
+
+function changeUrl(ss){
+    var Pv = getCookie('parent_val')
+    var Fv = getCookie('filter_val')
+    if(Pv != ""){
+        url=ss.getAttribute("href")
+	url=url + "&filter_val=" + Fv + "&parent_val=" + Pv;
+        ss.setAttribute("href",url)
+    }else{
+	url=ss.getAttribute("href")
+	ss.setAttribute("href",url)
+    }    
+}
+
+
+ 
+</script>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}add_compute_host__modal{% endblock %}
+{% block form_action %}{% url 'horizon:admin:aggregates:compute:addhost' %}{% endblock %}
+
+{% block modal_id %}add_compute_host__modal{% endblock %}
+{% block modal-header %}{% trans "Add Compute Host" %}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+  <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+<div class="right">
+    <h3>{% trans "Description:" %}</h3>
+    <p>{% trans "Add a compute node, When the prompt is successful, the compute service is being installed in the background of the compute node. Do not perform any other operations on the compute node server to avoid affecting the installation of the service." %}</p>
+</div>
+
+<script type="text/javascript">
+</script>
+{% endblock %}
+
+{% block modal-footer %}
+    <button type="submit" class="btn btn-primary">{% trans "Add Compute Host" %}</button>
+    {% if hide %}<a href="{% url 'horizon:admin:aggregates:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>{% endif %}
+{% endblock %}

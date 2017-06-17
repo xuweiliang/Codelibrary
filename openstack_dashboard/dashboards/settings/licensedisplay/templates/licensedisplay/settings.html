@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "License Register" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("License Register") %}
+{% endblock page_header %}
+
+{% block main %}
+  {#% include "admin/licenseregister/_settings.html" %#}
+  {% include "admin/licensedisplay/_settings.html" %}
+{% endblock %}
+

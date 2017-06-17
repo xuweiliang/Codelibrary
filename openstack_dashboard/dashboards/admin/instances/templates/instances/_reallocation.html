@@ -1,0 +1,44 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_id %}reallocation_instance_form{% endblock %}
+{% block form_action %}{% url "horizon:admin:instances:reallocation" instance_id %}{% endblock %}
+
+{% block modal_id %}reallocation_instance_modal{% endblock %}
+{% block modal-header %}{% trans "Reallocate Instance" %}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+  <fieldset>
+  {% include "horizon/common/_form_fields.html" %}
+  </fieldset>
+</div>
+<div class="right">
+  <h3>{% trans "Description:" %}</h3>
+  <p>{% trans "Select the image to rebuild your instance." %}</p>
+  {% if can_set_server_password %}
+  <p>{% trans "You may optionally set a password on the rebuilt instance." %}</p>
+  {% endif %}
+</div>
+<script type="text/javascript">
+var list = $("#id_user_data").val();
+var json = eval("(" + list +")");
+$("#id_user").closest(".form-group").hide();
+$("#id_project").change(function(){
+        projectChoice = $(this).val();
+        $("#id_user").empty()
+        var options = json[projectChoice];
+        var i;
+        console.info(options);
+        if (options){
+            $("#id_user").closest(".form-group").show();
+            for(i=0;i<options.length;i++){
+                    var option = options[i];
+                    $("#id_user").append("<option value='"+option[0]+"'>"+option[1]+"</option>");
+            }
+        }else{
+            $("#id_user").closest(".form-group").hide();
+        }
+});
+</script>
+{% endblock %}
