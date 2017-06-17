@@ -1,0 +1,33 @@
+import sys
+from oslo_config import cfg
+dict_key = cfg.StrOpt('fields', default='KCdjcmVhdGVkX2F0JywgJ3VwZGF0ZWRfYXQnLCAnZGVsZXRlZF9hdCcsICdpZCcsICdkZXZpY2Vf\naWQnLCAnaXAnLCAnTUFDJywgJ1Rlcm1pbmFsX2xvY2F0aW9uJywgJ3N0YXR1cycsICdzeXN0ZW0n\nLCAnY3B1JywgJ21lbW9yeScsICdnYXRld2F5JywgJ3ZlcnNpb24nLCAnaG9zdG5hbWUnLCAndXNl\ncicsICdiaW5kaW5nX2luc3RhbmNlJywgJ2RlbGV0ZWQnKQ==\n', help='fileds')
+datalist = cfg.StrOpt('list', default='c2VsZWN0ICogZnJvbSBkZXZpY2Vz\n', help='list function')
+by_id = cfg.StrOpt('by_id', default='c2VsZWN0ICogZnJvbSBkZXZpY2VzIHdoZXJlIGlkID0gezB9\n', help='get_by_id function')
+mac = cfg.StrOpt('mac', default='c2VsZWN0ICogZnJvbSBkZXZpY2VzIHdoZXJlIE1BQyA9ICd7MH0n\n', help = 'get_by_mac function')
+update = cfg.StrOpt('update', default='dXBkYXRlIGRldmljZXMgc2V0IGlwPSd7aXB9JywgVGVybWluYWxfbG9jYXRpb249e2xvY2F0aW9u\nfSwgc3RhdHVzPSd7c3RhdHVzfScsIHN5c3RlbT0ne3N5c3RlbX0nLCBjcHU9J3tjcHV9JywgbWVt\nb3J5PSd7bWVtb3J5fScsIGdhdGV3YXk9J3tnYXRld2F5fScsIHZlcnNpb249J3t2ZXJzaW9ufScs\nIGhvc3RuYW1lPSd7aG9zdG5hbWV9JywgdXNlcj0ne3VzZXJ9JywgYmluZGluZ19pbnN0YW5jZT0n\ne2luc3RhbmNlfScsdXBkYXRlZF9hdD0ne2xvY2FsdGltZX0nIHdoZXJlIGlkPXtpZH0=\n', help='update function')
+status = cfg.StrOpt('status', default='dXBkYXRlIGRldmljZXMgc2V0IHN0YXR1cz0ne3N0YXR1c30nLCB1cGRhdGVkX2F0PSd7bG9jYWx0\naW1lfScgd2hlcmUgaWQ9e2lkfQ==\n', help='update status')
+add = cfg.StrOpt('add', default='aW5zZXJ0IGludG8gZGV2aWNlcyhjcmVhdGVkX2F0LCBkZXZpY2VfaWQsIGlwLCBNQUMsVGVybWlu\nYWxfbG9jYXRpb24sIHN0YXR1cywgc3lzdGVtLCBjcHUsIG1lbW9yeSwgZ2F0ZXdheSwgdmVyc2lv\nbiwgaG9zdG5hbWUsICB1c2VyLCBiaW5kaW5nX2luc3RhbmNlKSB2YWx1ZXMoJ3tsb2NhbHRpbWV9\nJywne2RldmljZV9pZH0nLCd7aXB9JywgJ3tNQUN9Jywge1Rlcm1pbmFsX2xvY2F0aW9ufSwgJ3tz\ndGF0dXN9JywgJ3tzeXN0ZW19JywgJ3tjcHV9JywgJ3ttZW1vcnl9JywgJ3tnYXRld2F5fScsICd7\ndmVyc2lvbn0nLCAne2hvc3RuYW1lfScsICd7dXNlcn0nLCAne2JpbmRpbmdfaW5zdGFuY2V9Jyk=\n', help='add function')
+delete = cfg.StrOpt('delete', default='ZGVsZXRlIGZyb20gZGV2aWNlcyB3aGVyZSBpZD17MH0=\n', help='delete function')
+create_sql =cfg.StrOpt('create_sql', default='Y3JlYXRlIHRhYmxlIGRldmljZXMoY3JlYXRlZF9hdCB2YXJjaGFyKDM2KSwgdXBkYXRlZF9hdCB2\nYXJjaGFyKDM2KSwgZGVsZXRlZF9hdCB2YXJjaGFyKDM2KSwgaWQgaW50KDExKSBub3QgbnVsbCBh\ndXRvX2luY3JlbWVudCBwcmltYXJ5IGtleSwgZGV2aWNlX2lkIHZhcmNoYXIoMzYpIG5vdCBudWxs\nLCBpcCB2YXJjaGFyKDM2KSwgTUFDIHZhcmNoYXIoMzYpLCBUZXJtaW5hbF9sb2NhdGlvbiBpbnQo\nMTEpLCBzdGF0dXMgdmFyY2hhcigxMSksIHN5c3RlbSB2YXJjaGFyKDM2KSwgY3B1IHZhcmNoYXIo\nMzYpLCBtZW1vcnkgdmFyY2hhcigzNiksIGdhdGV3YXkgdmFyY2hhcigzNiksIHZlcnNpb24gdmFy\nY2hhcigzNiksIGhvc3RuYW1lIHZhcmNoYXIoMzYpIGNoYXJhY3RlciBzZXQgdXRmOCBjb2xsYXRl\nIHV0ZjhfdW5pY29kZV9jaSwgdXNlciB2YXJjaGFyKDM2KSBjaGFyYWN0ZXIgc2V0IHV0ZjggY29s\nbGF0ZSB1dGY4X3VuaWNvZGVfY2ksIGJpbmRpbmdfaW5zdGFuY2UgdmFyY2hhcigzNikgY2hhcmFj\ndGVyIHNldCB1dGY4IGNvbGxhdGUgdXRmOF91bmljb2RlX2NpLCBkZWxldGVkIGludCgxMSkp\n', help='add function')
+create_spice_proxy = cfg.StrOpt('spice_proxy', default='Y3JlYXRlIHRhYmxlIHNwaWNlX3Byb3h5KGlkIGludGVnZXIgbm90IG51bGwgcHJpbWFyeSBrZXks\nIHNwaWNlX3Byb3h5X2ZsdWcgQm9vbGVhbiBkZWZhdWx0IEZhbHNlLCBjcmVhdGVkX2F0IHZhcmNo\nYXIoMzYpICx1cGRhdGVkX2F0IHZhcmNoYXIoMzYpICxkZWxldGVkX2F0IHZhcmNoYXIoMzYpICwg\nZGVsZXRlZCBpbnRlZ2VyLCBodHRwX3BvcnQgaW50KDExKSk7\n', help='create spice proxy table')
+insert_spice_proxy = cfg.StrOpt('insert_spice_proxy', default = 'aW5zZXJ0IGludG8gc3BpY2VfcHJveHkgKGlkLCBzcGljZV9wcm94eV9mbHVnLHVwZGF0ZWRfYXQs\naHR0cF9wb3J0KSB2YWx1ZXMgKDEsRmFsc2UsICd7dXBkYXRlX3RpbWV9JywyMzQ1Nik7\n', help='insert spice_proxy data')
+update_spice_proxy = cfg.StrOpt('update_spice_proxy', default = 'dXBkYXRlIHNwaWNlX3Byb3h5IHNldCBzcGljZV9wcm94eV9mbHVnPXtzcGljZV9wcm94eV9mbHVn\nfSwgaHR0cF9wb3J0PXtodHRwX3BvcnR9LCB1cGRhdGVkX2F0PSd7dXBkYXRlX3RpbWV9Jw==\n', help = 'update spice proxy data')
+
+CONF = cfg.CONF
+CONF.register_opt(datalist)
+CONF.register_opt(create_sql)
+CONF.register_opt(by_id)
+CONF.register_opt(mac)
+CONF.register_opt(update)
+CONF.register_opt(status)
+CONF.register_opt(add)
+CONF.register_opt(delete)
+CONF.register_opt(dict_key)
+CONF.register_opt(create_spice_proxy)
+CONF.register_opt(insert_spice_proxy)
+CONF.register_opt(update_spice_proxy)
+
+def import_module(import_str):
+    """Import a module."""
+    __import__(import_str) 
+    return sys.modules[import_str]
