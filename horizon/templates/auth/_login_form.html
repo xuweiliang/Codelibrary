@@ -1,0 +1,213 @@
+{% load i18n %}
+
+{% block pre_login %}
+<form id="" class="ng-pristine ng-valid ng-scope"
+      method="POST"
+      action="{% url 'login' %}"
+      autocomplete="off"
+      ng-controller="hzLoginController" style="margin-top:220px">
+  {% csrf_token %}
+{% endblock %}
+
+  <div class="panel panel-default" style="background-color: rgba(255, 255, 255, 0)">
+
+    <div class="panel-heading" style="background-color: rgba(44, 47, 49, 0.79);">
+    <!--{% block login_header %}
+      <h3 class="login-title">
+        {% trans 'Log in' %}
+      </h3>-->
+    {% endblock %}
+    </div>
+
+    <div class="panel-body" style="background-color: rgba(44, 47, 49, 0.79);">
+    {% block login_body %}
+      {% comment %}
+        These fake fields are required to prevent Chrome v34+ from autofilling form.
+      {% endcomment %}
+      {% if HORIZON_CONFIG.password_autocomplete != "on" %}
+        <div class="fake_credentials" style="display: none">
+          <input type="text" name="fake_email" value="" />
+          <input type="password" name="fake_password" value="" />
+        </div>
+      {%endif%}
+      {% include "auth/_description.html" %}
+      <fieldset hz-login-finder>
+        {% if request.user.is_authenticated and 'next' in request.GET %}
+          <div class="form-group clearfix error help-block alert alert-danger">
+            <p>
+              {% trans "You do not have permission to access the resource:" %}
+            </p>
+            <p>
+              <strong>
+                {{ request.GET.next }}
+              </strong>
+            </p>
+            <p>
+              {% url 'horizon:user_home' as home_url %}
+              {% blocktrans trimmed %}
+                Login as different user or go back to <a href="{{ home_url }}">home page</a>
+              {% endblocktrans %}
+            </p>
+          </div>
+        {% endif  %}
+        {% if request.COOKIES.logout_reason %}
+          <div class="form-group clearfix error help-block alert alert-danger" id="logout_reason">
+            <p>{{ request.COOKIES.logout_reason }}</p>
+          </div>
+        {% endif %}
+        {% if next %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ next }}" />
+        {% endif %}
+        {% include "horizon/common/_form_fields.html" %}
+<!-- script src="../../../static/horizon/lib/jquery/jquery.js"></script-->
+<script type="text/javascript">
+if(!document.getElementsByClassName){
+  document.getElementsByClassName = function(className, element){
+    var children = (element || document).getElementsByTagName('*');
+    var elements = new Array();
+    for (var i=0; i<children.length; i++){
+      var child = children[i];
+      var classNames = child.className.split(' ');
+      for (var j=0; j<classNames.length; j++){
+        if (classNames[j] == className){
+          elements.push(child);
+          break;
+        }
+      }
+    }
+    return elements;
+  };
+}
+var count = 0
+var countdown = 0;
+$("#id_username").blur(function(){
+    var username=$("#id_username").val();
+    var Url = window.location.href
+    var newUrl = new Array();
+    newUrl = Url.split("/")
+    if(newUrl[newUrl.length-1] == "dashboard"){
+        var url = "/dashboard/auth/checklogin?username="
+    }else{
+        var url ="../checklogin?username="
+    }
+    if(username){
+    $.ajax({
+        type:"GET",
+        url: url + username,
+        dataType:"jsonp",
+        jsonp:"callback",
+        jsonpCallback:"match",
+        success:function(msg){
+            if(msg.success != null){
+                if(msg.success.number == 3 && msg.success.time != 0 ){
+                    console.log("number and time undefind")
+                    if(count == 0){
+                        creatdiv();
+                        document.getElementById("id_login").disabled=true;
+                        countdown = 60 -  msg.success.time;
+                        settime();
+                        count = 1
+                    }
+                }
+            } else if(msg.error){
+                console.log("msg===" + msg.error);  
+            }
+        },
+    });}
+});
+
+function settime() {
+    var sec = document.getElementById("seconds");
+    if (countdown == 0) {
+        document.getElementById("pwdisok").style.display="none";
+        document.getElementById("id_login").disabled=false;
+        return
+    } else {
+    document.getElementById("pwdisok").style.display="block";
+        sec.innerHTML="{% trans "You are logged in mistake three times, Please try again after " %}" + countdown + "{% trans "seconds!"%}";
+        countdown--;
+    }
+    setTimeout(function() {
+        settime()
+    },1000)
+}
+
+function creatdiv(){
+
+  if(document.getElementById("pwdisok") == null){
+    //var parent_div = document.getElementsByClassName("modal-body clearfix")[0]
+    var parent_div = document.getElementsByClassName("panel-body")[0]
+    var child = document.createElement("div")
+    child.setAttribute("id","pwdisok")
+    child.setAttribute("style","display:none;padding:15px;"+
+                "border-radius: 5px;margin-top: 18px;"+
+                "bordgr: 1px solid transparent;background-color: #f2dede;"+
+                "border-color: #ebccd1;color: #a94442;")
+    var html='<span id="seconds" style="display:block;text-align:center;"></span>'
+    child.innerHTML=html
+    parent_div.appendChild(child)
+  }
+}
+
+function changeLogin(id,image){
+    var input_dm = document.getElementById(id)
+    input_dm.style.width="390px"
+    input_dm.style.height="33px"
+    input_dm.style.float="right"
+
+    var parent_dm = input_dm.parentNode
+    parent_dm.style.display="block"
+    parent_dm.style.width="425px"
+    parent_dm.style.height="32px"
+
+    var creat_div = document.createElement("div");
+    creat_div.style.display="block"
+    creat_div.style.background="url(/dashboard/static/dashboard/img/"+ image +") 3px 3px rgb(253, 253, 253) no-repeat"
+    creat_div.style.width="32px"
+    creat_div.style.height="32px"
+    creat_div.style.border="1px solid rgb(221, 221, 221)"
+    //creat_div.style.float="left"
+    creat_div.style.borderRadius="4px"
+    parent_dm.appendChild(creat_div)
+}
+function new_login(){
+    var input_id = ["id_username","id_password"]
+    var image = ["icon-user.png","icon-pwd.png"]
+    for(var i=0;i<2;i++){
+        changeLogin(input_id[i],image[i])
+        var color = document.getElementsByClassName("control-label  ")[i].style.color="#dddddd"
+    }
+    var login_data = document.getElementsByClassName("panel-heading")[0];
+    login_data.style.minHeight = "108px";
+    var creat_div = document.createElement("div");
+    creat_div.setAttribute("style","display:block;width: 425px;height: 96px;float: left;")
+    html = '<span style="display:block;width: 425px;float: left;color: #FAFAFA;font-size: 30px;text-align: center;line-height: 70px;">桌面云后台管理系统</span>' +
+           '<span style="display:block;width: 425px;float: left;color: #FAFAFA;font-size: 14px;text-align: center;line-height: 0px;">Desktop Cloud Management System </span>'
+    creat_div.innerHTML=html
+    login_data.appendChild(creat_div)
+    //var modal_header = document.getElementsByClassName("modal-header")[0]
+    //modal_header.style.padding="0px"
+    //modal_header.style.minHeight= "96.42857px";
+    
+}
+new_login()
+</script>
+
+      </fieldset>
+    {% endblock %}
+    </div>
+    <div class="panel-footer" style="background-color: rgba(44, 47, 49, 0.79);">
+      {% block login_footer %}
+        <!-- button id="loginBtn" type="submit" class="btn btn-primary pull-right" -->
+        <button id="id_login" type="submit" class="btn btn-primary pull-right">
+          <span ng-show="auth_type==='credentials'">{% trans "Sign In" %}</span>
+          <span ng-hide="auth_type==='credentials'" ng-cloak>{% trans "Connect" %}</span>
+        </button>
+	<div class="clearfix"></div>
+      {% endblock %}
+    </div>
+  </div>
+
+{% block post_login%}
+</form>
+{% endblock %}
